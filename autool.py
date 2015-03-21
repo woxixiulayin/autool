@@ -1,16 +1,16 @@
-#!/bin/python
+#!/usr/bin/python
 
 import os
 import pexpect
 import sys
 
-
-AUTOOL_URL = "/home/ext-huaqin-liuzhigang/liudoc/autool_python"
+HOME_DIR = '/'.join(os.getcwd().split('/')[0:3]) + '/'
+AUTOOL_URL = "git@github.com:woxixiulayin/autool.git"
 REPO_REV = "master"
 
-my_autool = "~/.autool/autool"
-my_autool_dir = "~/.autool"
-my_main = "~/.autool/main.py"
+my_autool = HOME_DIR + ".autool/autool.py"
+my_autool_dir = HOME_DIR + ".autool"
+my_main = HOME_DIR + ".autool/main.py"
 
 
 def _Run(s):
@@ -23,9 +23,7 @@ def _Find_autool():
             and os.path.isfile(my_main):
         return True
     else:
-        print """there is no autool in your ~/.autool
-begin to download autool
-        """
+        print """there is no autool in your ~/.autool"""
 
         return False
 
@@ -39,6 +37,7 @@ def _Make_dir_file():
 
 
 def _Autool_clone():
+    print "begin git colne move"
     try:
         _Run("git clone %s %s" % (AUTOOL_URL, my_autool_dir))
     except Exception as e:
@@ -47,6 +46,7 @@ def _Autool_clone():
 
 
 def _Autool_pull():
+    print "check newest versin"
     try:
     	os.chdir(my_autool_dir)
         _Run("git pull")
@@ -56,14 +56,12 @@ def _Autool_pull():
 
 
 def main():
-    if _Find_autool():
-        _Run("python %s" % my_main)
-    else:
+    if not _Find_autool():
         _Make_dir_file()
         _Autool_clone()
     _Autool_pull()
-    # _Run("python %s" % my_main)
-
+    _Run("python %s" % my_main)
+   # print os.path.dirname(__file__)
 
 if __name__ == '__main__':
     main()
